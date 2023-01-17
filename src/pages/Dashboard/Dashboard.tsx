@@ -9,7 +9,7 @@ import { Container } from "./styles";
 const Dashboard: React.FC = () => {
   return (
     <Container>
-      <ContentHeader title="Contente header">
+      <ContentHeader title="Dashboard">
         <SelectInput options={getSelectMonths} />
       </ContentHeader>
     </Container>
