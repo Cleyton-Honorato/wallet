@@ -30,6 +30,12 @@ export const Container = styled.div`
     flex-direction: column;
     justify-content: space-between;
     padding-left: 10px;
+    gap: 5px;
+  }
+
+  > div span {
+    font-size: 22px;
+    font-weight: 500;
   }
 `;
 
