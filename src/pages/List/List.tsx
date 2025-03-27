@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import ContentHeader from "../../components/ContentHeader/ContentHeader";
 import SelectInput from "../../components/SelectInput/SelectInput";
-import { getSelectMonths, getSelectYears } from "../../api";
+// import { getSelectMonths, getSelectYears } from "../../api";
 
 import HistoryFinanceCard from "../../components/HistoryFinanceCard/HistoryFinanceCard";
 
@@ -12,6 +12,8 @@ import expenses from "../../repositories/expenses";
 import { Container, Content, Filters } from "./styles";
 import { formatCurrency } from "../../utils/formatCurrenry";
 import { formatDate } from "../../utils/formatDate";
+import { useUniqueYears } from "../../hooks/useYear";
+import listOfMonths from "../../utils/months";
 
 type Params = { type: string };
 interface RouteParams {
@@ -29,7 +31,12 @@ interface Data {
 }
 
 export default function List({ match }: RouteParams) {
+  const month = String(new Date().getMonth() + 1);
+  const year = String(new Date().getFullYear());
+
   const [data, setData] = useState<Array<Data>>([]);
+  const [monthSelected, setMonthSelected] = useState<string>(month);
+  const [yearSelected, setYearSelected] = useState<string>(year);
 
   const { type } = match.params;
 
@@ -45,25 +52,52 @@ export default function List({ match }: RouteParams) {
     return type === "entry-balance" ? gains : expenses;
   }, [type]);
 
-  useEffect(() => {
-    const response = listData.map((item) => {
+  const years = useUniqueYears(listData);
+
+  const months = useMemo(() => {
+    return listOfMonths.map((month, index) => {
       return {
-        description: item.description,
-        amountFormatted: formatCurrency(Number(item.amount)),
-        frequency: item.frequency,
-        dateFormatted: formatDate(item.date),
-        tagColor: item.frequency === "recorrente" ? "#4E41F0" : "#E44C4E",
+        label: month,
+        value: index + 1,
       };
     });
+  }, []);
+
+  useEffect(() => {
+    const response = listData
+      .filter((item) => {
+        const date = new Date(item.date);
+        const month = String(date.getMonth() + 1);
+        const year = String(date.getFullYear());
+
+        return month === monthSelected && year === yearSelected;
+      })
+      .map((item) => {
+        return {
+          description: item.description,
+          amountFormatted: formatCurrency(Number(item.amount)),
+          frequency: item.frequency,
+          dateFormatted: formatDate(item.date),
+          tagColor: item.frequency === "recorrente" ? "#4E41F0" : "#E44C4E",
+        };
+      });
 
     setData(response);
-  }, []);
+  }, [listData, monthSelected, yearSelected, data.length]);
 
   return (
     <Container>
       <ContentHeader title={title} lineColor={lineColor}>
-        <SelectInput options={getSelectYears} />
-        <SelectInput options={getSelectMonths} />
+        <SelectInput
+          defaultValue={month}
+          options={months}
+          onChange={(e) => setMonthSelected(e.target.value)}
+        />
+        <SelectInput
+          defaultValue={year}
+          options={years}
+          onChange={(e) => setYearSelected(e.target.value)}
+        />
       </ContentHeader>
 
       <Filters>

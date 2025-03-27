@@ -10,7 +10,7 @@ const Dashboard: React.FC = () => {
   return (
     <Container>
       <ContentHeader title="Dashboard">
-        <SelectInput options={getSelectMonths} />
+        <SelectInput options={getSelectMonths} onChange={() => {}} />
       </ContentHeader>
     </Container>
   );

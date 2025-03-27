@@ -6,7 +6,7 @@ interface HistoryFinanceCardProps {
   tagColor: string;
   title: string;
   subtitle: string;
-  amount: number;
+  amount: string;
 }
 
 export default function HistoryFinanceCard(props: HistoryFinanceCardProps) {
