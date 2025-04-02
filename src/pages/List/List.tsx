@@ -30,6 +30,11 @@ interface Data {
   tagColor: string;
 }
 
+enum Frequency {
+  RECORRENT = "recorrente",
+  EVENTUAL = "eventual",
+}
+
 export default function List({ match }: RouteParams) {
   const month = String(new Date().getMonth() + 1);
   const year = String(new Date().getFullYear());
@@ -37,6 +42,10 @@ export default function List({ match }: RouteParams) {
   const [data, setData] = useState<Array<Data>>([]);
   const [monthSelected, setMonthSelected] = useState<string>(month);
   const [yearSelected, setYearSelected] = useState<string>(year);
+  const [frequencySelected, setFrequencySelected] = useState([
+    Frequency.RECORRENT,
+    Frequency.EVENTUAL,
+  ]);
 
   const { type } = match.params;
 
@@ -63,6 +72,18 @@ export default function List({ match }: RouteParams) {
     });
   }, []);
 
+  function handleFrequencySelected(frequency: Frequency) {
+    const alreadySelected =
+      frequencySelected.includes(Frequency.RECORRENT) &&
+      frequencySelected.includes(Frequency.EVENTUAL);
+
+    if (alreadySelected) {
+      setFrequencySelected(frequencySelected.filter((el) => el !== frequency));
+    } else {
+      setFrequencySelected((prev) => [...prev, frequency]);
+    }
+  }
+
   useEffect(() => {
     const response = listData
       .filter((item) => {
@@ -70,7 +91,11 @@ export default function List({ match }: RouteParams) {
         const month = String(date.getMonth() + 1);
         const year = String(date.getFullYear());
 
-        return month === monthSelected && year === yearSelected;
+        return (
+          month === monthSelected &&
+          year === yearSelected &&
+          frequencySelected.includes(item.frequency as Frequency)
+        );
       })
       .map((item) => {
         return {
@@ -83,7 +108,7 @@ export default function List({ match }: RouteParams) {
       });
 
     setData(response);
-  }, [listData, monthSelected, yearSelected, data.length]);
+  }, [listData, monthSelected, yearSelected, data.length, frequencySelected]);
 
   return (
     <Container>
@@ -103,16 +128,22 @@ export default function List({ match }: RouteParams) {
       <Filters>
         <button
           type="button"
-          className="tag-filter tag-filter-recurrent"
+          className={`tag-filter tag-filter-recurrent ${
+            frequencySelected.includes(Frequency.RECORRENT) && "actived"
+          }`}
           id="recurrent"
+          onClick={() => handleFrequencySelected(Frequency.RECORRENT)}
         >
           Recorrentes
         </button>
 
         <button
           type="button"
-          className="tag-filter tag-filter-eventual"
+          className={`tag-filter tag-filter-eventual ${
+            frequencySelected.includes(Frequency.EVENTUAL) && "actived"
+          }`}
           id="Eventuel"
+          onClick={() => handleFrequencySelected(Frequency.EVENTUAL)}
         >
           Eventuais
         </button>

@@ -20,6 +20,8 @@ export const Filters = styled.div`
 
     transition: opacity 0.3s;
 
+    opacity: 0.4;
+
     &:hover {
       opacity: 0.7;
     }
@@ -28,16 +30,22 @@ export const Filters = styled.div`
   .tag-filter-recurrent::after {
     content: "";
     display: block;
-    width: 55px;
-    margin: 0 auto;
-    border-bottom: 10px solid ${(props) => props.theme.colors.warning};
+    width: 100%;
+    margin: 0.4rem 0 0 0;
+    border-bottom: 0.4rem solid ${(props) => props.theme.colors.success};
+    border-radius: 5px;
   }
 
   .tag-filter-eventual::after {
     content: "";
     display: block;
-    width: 55px;
-    margin: 0 auto;
-    border-bottom: 10px solid ${(props) => props.theme.colors.success};
+    width: 100%;
+    margin: 0.4rem 0 0 0;
+    border-bottom: 0.4rem solid ${(props) => props.theme.colors.warning};
+    border-radius: 5px;
+  }
+
+  .actived {
+    opacity: 1;
   }
 `;
