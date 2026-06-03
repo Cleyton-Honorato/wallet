@@ -154,7 +154,8 @@
   /* === Layout === */
   --sidebar-width: 260px;
   --sidebar-collapsed-width: 72px;
-  --header-height: 64px;
+  /* Matches sidebar .logoArea: vertical padding + 32px logo icon */
+  --header-height: calc(var(--space-5) * 2 + 32px);
   --content-max-width: 1200px;
 }
 

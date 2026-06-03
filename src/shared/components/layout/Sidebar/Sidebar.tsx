@@ -7,10 +7,10 @@ import {
   BarChart3,
   PanelLeftClose,
   PanelLeftOpen,
-  Wallet,
 } from 'lucide-react';
 import { cn } from '@shared/utils/cn';
 import styles from './Sidebar.module.css';
+import logo from '@assets/images/logo.png';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -60,7 +60,7 @@ export function Sidebar({ collapsed, onToggleCollapse, mobileOpen, onCloseMobile
         {/* Logo */}
         <div className={styles.logoArea}>
           <div className={styles.logoIcon}>
-            <Wallet size={18} />
+            <img src={logo} alt="Wallet" />
           </div>
           <span className={styles.logoText}>Wallet</span>
         </div>
