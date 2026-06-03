@@ -29,8 +29,32 @@ export const TRANSACTION_TYPES = {
 export const STORAGE_KEYS = {
   TOKEN: 'wallet_token',
   THEME: 'wallet_theme',
-  SIDEBAR_COLLAPSED: 'wallet_sidebar_collapsed',
+  DASHBOARD_PERIOD: 'wallet_dashboard_period',
 } as const;
+
+/** Dashboard period filter */
+export const DASHBOARD_PERIOD_MODES = {
+  ANNUAL: 'annual',
+  MONTHLY: 'monthly',
+} as const;
+
+export const DASHBOARD_AVAILABLE_YEARS = [2024, 2025, 2026] as const;
+
+export const DASHBOARD_MONTH_OPTIONS = [
+  { value: 0, label: 'Anual' },
+  { value: 1, label: 'Janeiro' },
+  { value: 2, label: 'Fevereiro' },
+  { value: 3, label: 'Março' },
+  { value: 4, label: 'Abril' },
+  { value: 5, label: 'Maio' },
+  { value: 6, label: 'Junho' },
+  { value: 7, label: 'Julho' },
+  { value: 8, label: 'Agosto' },
+  { value: 9, label: 'Setembro' },
+  { value: 10, label: 'Outubro' },
+  { value: 11, label: 'Novembro' },
+  { value: 12, label: 'Dezembro' },
+] as const;
 
 /** Date format patterns */
 export const DATE_FORMATS = {
