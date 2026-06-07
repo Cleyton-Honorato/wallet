@@ -28,6 +28,7 @@ export const TRANSACTION_TYPES = {
 /** Local storage keys */
 export const STORAGE_KEYS = {
   TOKEN: 'wallet_token',
+  USER: 'wallet_user',
   THEME: 'wallet_theme',
   DASHBOARD_PERIOD: 'wallet_dashboard_period',
 } as const;

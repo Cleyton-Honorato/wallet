@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router';
+import { NavLink, useLocation, useNavigate } from 'react-router';
 import {
   LayoutDashboard,
   ArrowLeftRight,
@@ -16,11 +16,14 @@ import {
   Repeat,
   Shuffle,
   ChevronDown,
+  LogOut,
   type LucideIcon,
 } from 'lucide-react';
 import { useTheme } from '@shared/hooks/useTheme';
 import { useMediaQuery } from '@shared/hooks/useMediaQuery';
 import { cn } from '@shared/utils/cn';
+import { useAppDispatch, useAppSelector } from '@app/hooks';
+import { logout, selectAuthUser } from '@features/auth/store/authSlice';
 import styles from './Header.module.css';
 import logo from '@assets/images/logo.png';
 
@@ -74,6 +77,15 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const navRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectAuthUser);
+  const userInitial = user?.name?.charAt(0).toUpperCase() ?? '?';
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login', { replace: true });
+  };
 
   const isActive = (to: string) =>
     to === '/' ? location.pathname === '/' : location.pathname.startsWith(to);
@@ -198,9 +210,23 @@ export function Header() {
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          <div className={styles.avatar} aria-label="Perfil do usuário">
-            C
+          <div
+            className={styles.avatar}
+            aria-label="Perfil do usuário"
+            title={user?.name ?? undefined}
+          >
+            {userInitial}
           </div>
+
+          <button
+            type="button"
+            className={styles.iconBtn}
+            onClick={handleLogout}
+            aria-label="Sair"
+            title="Sair"
+          >
+            <LogOut size={18} />
+          </button>
 
           <button
             type="button"

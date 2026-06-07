@@ -1,6 +1,7 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { formatCurrency } from '@shared/utils/formatCurrency';
 import type { CategoryExpenseSlice } from '@features/dashboard/types/dashboard.types';
+import { DashboardPanel } from './DashboardPanel';
 import styles from './ExpensesByCategoryPieChart.module.css';
 
 interface ExpensesByCategoryPieChartProps {
@@ -26,39 +27,53 @@ function CustomTooltip({
 }
 
 export function ExpensesByCategoryPieChart({ data }: ExpensesByCategoryPieChartProps) {
+  const total = data.reduce((sum, slice) => sum + slice.amount, 0);
+
   return (
-    <section className={styles.panel} aria-label="Despesas por categoria">
-      <h3 className={styles.title}>Despesas por categoria</h3>
+    <DashboardPanel title="Despesas por categoria">
       {data.length === 0 ? (
         <p className={styles.empty}>Nenhuma despesa no período selecionado.</p>
       ) : (
-        <div className={styles.chartWrap}>
-          <ResponsiveContainer width="100%" height={280}>
-            <PieChart>
-              <Pie
-                data={data}
-                dataKey="amount"
-                nameKey="categoryName"
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                paddingAngle={2}
-              >
-                {data.map((entry) => (
-                  <Cell key={entry.categoryId} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-              <Legend
-                formatter={(value: string) => (
-                  <span className={styles.legendLabel}>{value}</span>
-                )}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+        <div className={styles.content}>
+          <div className={styles.donutWrap}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={data}
+                  dataKey="amount"
+                  nameKey="categoryName"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={62}
+                  outerRadius={88}
+                  paddingAngle={2}
+                  stroke="none"
+                >
+                  {data.map((entry) => (
+                    <Cell key={entry.categoryId} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className={styles.center}>
+              <span className={styles.centerLabel}>Total</span>
+              <span className={styles.centerValue}>{formatCurrency(total)}</span>
+            </div>
+          </div>
+
+          <ul className={styles.legend}>
+            {data.map((slice) => (
+              <li key={slice.categoryId} className={styles.legendRow}>
+                <span className={styles.dot} style={{ background: slice.color }} aria-hidden />
+                <span className={styles.legendLabel}>{slice.categoryName}</span>
+                <span className={styles.legendPct}>{slice.percentage}%</span>
+                <span className={styles.legendAmount}>{formatCurrency(slice.amount)}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
-    </section>
+    </DashboardPanel>
   );
 }

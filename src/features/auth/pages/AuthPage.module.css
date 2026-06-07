@@ -1,0 +1,127 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: var(--bg-secondary, var(--bg-primary));
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg, 12px);
+  padding: var(--space-8, 2rem);
+  box-shadow: var(--shadow-lg, 0 10px 30px rgba(0, 0, 0, 0.12));
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.brand img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.brandText {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold, 700);
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6, 1.5rem);
+  font-size: var(--text-sm);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25rem);
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium, 500);
+  color: var(--text-primary);
+}
+
+.input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md, 8px);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  transition: border-color 0.15s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+}
+
+.fieldError {
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--color-danger-500, #ef4444);
+}
+
+.formError {
+  padding: var(--space-3);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-danger-50, rgba(239, 68, 68, 0.1));
+  color: var(--color-danger-600, #dc2626);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.submit {
+  margin-top: var(--space-2);
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-primary-500);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold, 600);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.switch {
+  margin-top: var(--space-5, 1.25rem);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.switch a {
+  color: var(--color-primary-500);
+  font-weight: var(--font-medium, 500);
+  text-decoration: none;
+}
+
+.switch a:hover {
+  text-decoration: underline;
+}

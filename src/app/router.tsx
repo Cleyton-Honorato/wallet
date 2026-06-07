@@ -11,9 +11,12 @@ const TransactionsPage = lazy(() => import('@features/transactions/pages/Transac
 const CategoriesPage = lazy(() => import('@features/categories/pages/CategoriesPage'));
 const BudgetsPage = lazy(() => import('@features/budgets/pages/BudgetsPage'));
 const ReportsPage = lazy(() => import('@features/reports/pages/ReportsPage'));
+const LoginPage = lazy(() => import('@features/auth/pages/LoginPage'));
+const RegisterPage = lazy(() => import('@features/auth/pages/RegisterPage'));
 
 // Layout
 import { AppLayout } from '@shared/components/layout';
+import { ProtectedRoute } from '@features/auth/components/ProtectedRoute';
 
 /**
  * Fallback component while lazy pages load
@@ -38,9 +41,28 @@ function PageLoader() {
  */
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: <AppLayout />,
+    path: '/login',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <LoginPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/register',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <RegisterPage />
+      </Suspense>
+    ),
+  },
+  {
+    element: <ProtectedRoute />,
     children: [
+      {
+        path: '/',
+        element: <AppLayout />,
+        children: [
       {
         index: true,
         element: (
@@ -112,6 +134,8 @@ export const router = createBrowserRouter([
             <ReportsPage />
           </Suspense>
         ),
+      },
+        ],
       },
     ],
   },

@@ -1,7 +1,7 @@
 import { formatCurrency } from '@shared/utils/formatCurrency';
 import { ProgressBar } from '@shared/components/ui/ProgressBar';
-import { getBudgetStatus } from '@features/budgets/lib/budgetSummary';
 import type { MonthlyBudgetView } from '@features/dashboard/types/dashboard.types';
+import { DashboardPanel } from './DashboardPanel';
 import styles from './MonthlyBudgetPanel.module.css';
 import { cn } from '@shared/utils/cn';
 
@@ -10,59 +10,44 @@ interface MonthlyBudgetPanelProps {
 }
 
 export function MonthlyBudgetPanel({ budgetView }: MonthlyBudgetPanelProps) {
-  const { monthLabel, totalPlanned, totalSpent, totalRemaining, usagePercent, lines, budget } =
-    budgetView;
-  const status = getBudgetStatus(usagePercent);
+  const { monthLabel, lines, budget } = budgetView;
 
   return (
-    <section className={styles.panel} aria-label="Orçamento mensal">
-      <div className={styles.header}>
-        <h3 className={styles.title}>Orçamento mensal</h3>
-        <span className={styles.month}>{monthLabel}</span>
-      </div>
-
+    <DashboardPanel
+      title="Orçamento mensal"
+      action={<span className={styles.month}>{monthLabel}</span>}
+    >
       {!budget ? (
         <p className={styles.empty}>Nenhum orçamento definido para este mês.</p>
       ) : (
-        <>
-          <div className={styles.totals}>
-            <div className={styles.totalItem}>
-              <span className={styles.totalLabel}>Planejado</span>
-              <span className={styles.totalValue}>{formatCurrency(totalPlanned)}</span>
-            </div>
-            <div className={styles.totalItem}>
-              <span className={styles.totalLabel}>Gasto</span>
-              <span className={styles.totalValue}>{formatCurrency(totalSpent)}</span>
-            </div>
-            <div className={styles.totalItem}>
-              <span className={styles.totalLabel}>Restante</span>
-              <span className={styles.totalValue}>{formatCurrency(totalRemaining)}</span>
-            </div>
-            <span className={cn(styles.badge, styles[status])}>{usagePercent}% usado</span>
-          </div>
-
-          <ProgressBar value={totalSpent} max={totalPlanned} showLabel />
-
-          <ul className={styles.lines}>
-            {lines.map((line) => (
+        <ul className={styles.lines}>
+          {lines.map((line) => {
+            const over = line.spentAmount > line.plannedAmount;
+            return (
               <li key={line.categoryId} className={styles.line}>
-                <div className={styles.lineHeader}>
+                <div className={styles.lineHead}>
                   <span
                     className={styles.dot}
                     style={{ backgroundColor: line.color }}
                     aria-hidden
                   />
                   <span className={styles.categoryName}>{line.categoryName}</span>
-                  <span className={styles.lineAmounts}>
-                    {formatCurrency(line.spentAmount)} / {formatCurrency(line.plannedAmount)}
-                  </span>
+                  <span className={styles.linePct}>{line.usagePercent}%</span>
                 </div>
                 <ProgressBar value={line.spentAmount} max={line.plannedAmount} />
+                <div className={styles.lineFoot}>
+                  <span className={styles.amounts}>
+                    {formatCurrency(line.spentAmount)} de {formatCurrency(line.plannedAmount)}
+                  </span>
+                  <span className={cn(styles.status, over && styles.over)}>
+                    {over ? 'Acima do limite' : 'Dentro do limite'}
+                  </span>
+                </div>
               </li>
-            ))}
-          </ul>
-        </>
+            );
+          })}
+        </ul>
       )}
-    </section>
+    </DashboardPanel>
   );
 }
