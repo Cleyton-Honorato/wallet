@@ -1,0 +1,69 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is([data-theme="dark"] *));
+
+@theme inline {
+  --color-background: var(--surface-primary);
+  --color-foreground: var(--text-primary);
+
+  --color-card: var(--surface-card);
+  --color-card-foreground: var(--text-primary);
+
+  --color-popover: var(--surface-elevated);
+  --color-popover-foreground: var(--text-primary);
+
+  --color-primary: var(--color-primary-500);
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: var(--color-gray-100);
+  --color-secondary-foreground: var(--text-primary);
+
+  --color-muted: var(--color-gray-100);
+  --color-muted-foreground: var(--text-secondary);
+
+  --color-accent: var(--color-primary-50);
+  --color-accent-foreground: var(--color-primary-700);
+
+  --color-destructive: var(--color-danger-500);
+  --color-destructive-foreground: #ffffff;
+
+  --color-border: var(--border-primary);
+  --color-input: var(--border-primary);
+  --color-ring: var(--color-primary-500);
+
+  --color-chart-1: var(--color-primary-500);
+  --color-chart-2: var(--color-success-500);
+  --color-chart-3: var(--color-warning-500);
+  --color-chart-4: var(--color-danger-500);
+  --color-chart-5: var(--color-transfer);
+
+  --color-sidebar: var(--surface-sidebar);
+  --color-sidebar-foreground: var(--text-primary);
+  --color-sidebar-primary: var(--color-primary-500);
+  --color-sidebar-primary-foreground: #ffffff;
+  --color-sidebar-accent: var(--color-primary-50);
+  --color-sidebar-accent-foreground: var(--color-primary-700);
+  --color-sidebar-border: var(--border-primary);
+  --color-sidebar-ring: var(--color-primary-500);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

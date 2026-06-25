@@ -1,10 +1,5 @@
 /**
  * Utility to conditionally join CSS class names.
- *
- * @example
- * cn('base', isActive && 'active', hasError && 'error')
- * // => "base active" (if isActive is true and hasError is false)
+ * Re-exports the shadcn/Tailwind-aware `cn` helper.
  */
-export function cn(...classes: (string | boolean | undefined | null)[]): string {
-  return classes.filter(Boolean).join(' ');
-}
+export { cn } from '@/lib/utils';

@@ -18,6 +18,7 @@ type LoginForm = z.infer<typeof schema>;
 
 interface LocationState {
   from?: { pathname: string };
+  passwordReset?: boolean;
 }
 
 export default function LoginPage() {
@@ -25,6 +26,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [login, { isLoading, error }] = useLoginMutation();
+  const passwordReset = (location.state as LocationState | null)?.passwordReset;
 
   const {
     register,
@@ -56,6 +58,10 @@ export default function LoginPage() {
         <p className={styles.subtitle}>Entre na sua conta</p>
 
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+          {passwordReset && (
+            <div className={styles.success}>Senha redefinida com sucesso. Faça login.</div>
+          )}
+
           {error && (
             <div className={styles.formError}>
               {getErrorMessage(error, 'Não foi possível entrar')}
@@ -92,6 +98,9 @@ export default function LoginPage() {
             {errors.password && (
               <span className={styles.fieldError}>{errors.password.message}</span>
             )}
+            <p className={styles.forgotLink}>
+              <Link to="/forgot-password">Esqueceu a senha?</Link>
+            </p>
           </div>
 
           <button type="submit" className={styles.submit} disabled={isLoading}>

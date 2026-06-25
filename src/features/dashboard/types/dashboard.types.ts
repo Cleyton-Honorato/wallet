@@ -67,8 +67,8 @@ export interface DashboardFixtures {
   categories: import('@features/categories/types/category.types').Category[];
   fixedIncomes: import('@features/transactions/types/income.types').FixedIncome[];
   variableIncomes: import('@features/transactions/types/income.types').VariableIncome[];
-  fixedExpenses: import('@features/transactions/types/expense.types').FixedExpense[];
-  variableExpenses: import('@features/transactions/types/expense.types').VariableExpense[];
+  fixedExpenses: import('@features/expenses/types/expense.types').FixedExpense[];
+  variableExpenses: import('@features/expenses/types/expense.types').VariableExpense[];
   emergencyFundSnapshot: import('@features/emergency-fund/types/emergencyFund.types').EmergencyFundSnapshot;
   emergencyFundMovements: import('@features/emergency-fund/types/emergencyFund.types').EmergencyFundMovement[];
   investmentPositions: import('@features/investments/types/investment.types').InvestmentPosition[];

@@ -6,4 +6,5 @@ export interface Category {
   color: string;
   icon?: string;
   type: CategoryType;
+  isSystem?: boolean;
 }

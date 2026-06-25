@@ -5,18 +5,16 @@ import {
   ArrowLeftRight,
   Tags,
   PiggyBank,
-  BarChart3,
   Menu,
   X,
   Sun,
   Moon,
   Bell,
-  Calendar,
-  DollarSign,
   Repeat,
   Shuffle,
   ChevronDown,
   LogOut,
+  Wallet,
   type LucideIcon,
 } from 'lucide-react';
 import { useTheme } from '@shared/hooks/useTheme';
@@ -33,43 +31,50 @@ interface NavLeaf {
   icon: LucideIcon;
 }
 
+interface NavSubmenuSection {
+  label: string;
+  items: NavLeaf[];
+}
+
 interface NavGroup {
   label: string;
   icon: LucideIcon;
-  children: NavLeaf[];
+  sections: NavSubmenuSection[];
 }
 
 type NavItem = NavLeaf | NavGroup;
 
+function isNavGroup(item: NavItem): item is NavGroup {
+  return 'sections' in item;
+}
+
 const navItems: NavItem[] = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   {
-    label: 'Despesas',
-    icon: Calendar,
-    children: [
-      { to: '/expenses/fixed', label: 'Despesas Fixas', icon: Repeat },
-      { to: '/expenses/variable', label: 'Despesas Variáveis', icon: Shuffle },
-    ],
-  },
-  {
-    label: 'Receitas',
-    icon: DollarSign,
-    children: [
-      { to: '/incomes/fixed', label: 'Receitas Fixas', icon: Repeat },
-      { to: '/incomes/variable', label: 'Receitas Variáveis', icon: Shuffle },
+    label: 'Financeiro',
+    icon: Wallet,
+    sections: [
+      {
+        label: 'Despesas',
+        items: [
+          { to: '/expenses/fixed', label: 'Fixas', icon: Repeat },
+          { to: '/expenses/variable', label: 'Variáveis', icon: Shuffle },
+        ],
+      },
+      {
+        label: 'Receitas',
+        items: [
+          { to: '/incomes/fixed', label: 'Fixas', icon: Repeat },
+          { to: '/incomes/variable', label: 'Variáveis', icon: Shuffle },
+        ],
+      },
     ],
   },
   { to: '/transactions', label: 'Transações', icon: ArrowLeftRight },
   { to: '/categories', label: 'Categorias', icon: Tags },
   { to: '/budgets', label: 'Orçamentos', icon: PiggyBank },
-  { to: '/reports', label: 'Relatórios', icon: BarChart3 },
 ];
 
-/**
- * Floating top navigation bar.
- * Holds the logo, primary navigation (with dropdown groups) and quick actions.
- * On mobile the navigation collapses into a dropdown panel.
- */
 export function Header() {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
@@ -91,14 +96,15 @@ export function Header() {
     to === '/' ? location.pathname === '/' : location.pathname.startsWith(to);
 
   const isGroupActive = (group: NavGroup) =>
-    group.children.some((child) => isActive(child.to));
+    group.sections.some((section) =>
+      section.items.some((child) => isActive(child.to)),
+    );
 
   const closeAll = () => {
     setMobileOpen(false);
     setOpenMenu(null);
   };
 
-  // Close dropdowns when clicking outside the nav or pressing Escape.
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
@@ -130,7 +136,7 @@ export function Header() {
         {/* Navigation */}
         <nav ref={navRef} className={cn(styles.nav, mobileOpen && styles.navOpen)}>
           {navItems.map((item) =>
-            'children' in item ? (
+            isNavGroup(item) ? (
               <div
                 key={item.label}
                 className={styles.navGroup}
@@ -168,16 +174,21 @@ export function Header() {
                     openMenu === item.label && styles.submenuOpen,
                   )}
                 >
-                  {item.children.map((child) => (
-                    <NavLink
-                      key={child.to}
-                      to={child.to}
-                      onClick={closeAll}
-                      className={cn(styles.submenuLink, isActive(child.to) && styles.active)}
-                    >
-                      <child.icon className={styles.submenuIcon} size={16} />
-                      <span>{child.label}</span>
-                    </NavLink>
+                  {item.sections.map((section) => (
+                    <div key={section.label} className={styles.submenuSection}>
+                      <span className={styles.submenuSectionLabel}>{section.label}</span>
+                      {section.items.map((child) => (
+                        <NavLink
+                          key={child.to}
+                          to={child.to}
+                          onClick={closeAll}
+                          className={cn(styles.submenuLink, isActive(child.to) && styles.active)}
+                        >
+                          <child.icon className={styles.submenuIcon} size={16} />
+                          <span>{child.label}</span>
+                        </NavLink>
+                      ))}
+                    </div>
                   ))}
                 </div>
               </div>

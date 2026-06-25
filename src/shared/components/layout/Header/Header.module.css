@@ -135,13 +135,14 @@
 
 .submenu {
   position: absolute;
-  top: calc(100% + var(--space-2));
+  top: 100%;
   left: 0;
   min-width: 220px;
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-2);
+  margin-top: var(--space-2);
   background: color-mix(in srgb, var(--surface-primary) 95%, transparent);
   backdrop-filter: blur(16px);
   border: 1px solid var(--border-primary);
@@ -152,6 +153,16 @@
   pointer-events: none;
   transition: opacity var(--transition-fast), transform var(--transition-fast);
   z-index: var(--z-dropdown);
+}
+
+/* Ponte invisível entre o botão e o submenu — evita fechar ao mover o mouse */
+.submenu::before {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--space-2));
+  left: 0;
+  right: 0;
+  height: var(--space-2);
 }
 
 .submenu.submenuOpen {
@@ -198,6 +209,22 @@
   flex-shrink: 0;
   width: 16px;
   height: 16px;
+}
+
+.submenuSection + .submenuSection {
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-primary);
+}
+
+.submenuSectionLabel {
+  display: block;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--text-tertiary, var(--text-secondary));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 /* === Actions === */
@@ -332,6 +359,10 @@
     transform: none;
     opacity: 1;
     pointer-events: auto;
+    display: none;
+  }
+
+  .submenu::before {
     display: none;
   }
 

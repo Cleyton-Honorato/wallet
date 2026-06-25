@@ -13,6 +13,8 @@ const BudgetsPage = lazy(() => import('@features/budgets/pages/BudgetsPage'));
 const ReportsPage = lazy(() => import('@features/reports/pages/ReportsPage'));
 const LoginPage = lazy(() => import('@features/auth/pages/LoginPage'));
 const RegisterPage = lazy(() => import('@features/auth/pages/RegisterPage'));
+const ForgotPasswordPage = lazy(() => import('@features/auth/pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('@features/auth/pages/ResetPasswordPage'));
 
 // Layout
 import { AppLayout } from '@shared/components/layout';
@@ -53,6 +55,22 @@ export const router = createBrowserRouter([
     element: (
       <Suspense fallback={<PageLoader />}>
         <RegisterPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/forgot-password',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <ForgotPasswordPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/reset-password',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <ResetPasswordPage />
       </Suspense>
     ),
   },
