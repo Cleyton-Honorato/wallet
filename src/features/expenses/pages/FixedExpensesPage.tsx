@@ -8,24 +8,29 @@ import {
   useCreateFixedExpenseMutation,
   useDeleteFixedExpenseMutation,
   useGetFixedExpensesQuery,
+  useSettleFixedExpenseMutation,
   useUpdateFixedExpenseMutation,
 } from '../api/expensesApi';
 import { useExpenseCategories } from '../hooks/useExpenseCategories';
 import type { FixedExpense } from '../types/expense.types';
 import { ExpenseModal } from '../components/ExpenseModal';
+import { MonthNavigator } from '../components/MonthNavigator';
 import {
   FixedExpenseForm,
   type FixedExpenseFormValues,
 } from '../components/FixedExpenseForm';
 import { FixedExpenseList } from '../components/FixedExpenseList';
+import { getCurrentMonthKey } from '../lib/formatters';
 import styles from '../components/Expenses.module.css';
 
 export default function FixedExpensesPage() {
-  const { data: expenses = [], isLoading, error } = useGetFixedExpensesQuery();
+  const [monthKey, setMonthKey] = useState(getCurrentMonthKey);
+  const { data: expenses = [], isLoading, error } = useGetFixedExpensesQuery(monthKey);
   const { categories, categoryMap, isLoading: categoriesLoading } = useExpenseCategories();
   const [createExpense, createState] = useCreateFixedExpenseMutation();
   const [updateExpense, updateState] = useUpdateFixedExpenseMutation();
   const [deleteExpense] = useDeleteFixedExpenseMutation();
+  const [settleExpense] = useSettleFixedExpenseMutation();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<FixedExpense | null>(null);
@@ -33,7 +38,8 @@ export default function FixedExpensesPage() {
   const totals = useMemo(() => {
     const active = expenses.filter((expense) => expense.isActive);
     const total = active.reduce((sum, expense) => sum + expense.amount, 0);
-    return { total, activeCount: active.length, totalCount: expenses.length };
+    const paidCount = active.filter((expense) => expense.paid).length;
+    return { total, activeCount: active.length, totalCount: expenses.length, paidCount };
   }, [expenses]);
 
   const openCreate = () => {
@@ -84,6 +90,14 @@ export default function FixedExpensesPage() {
     }).unwrap();
   };
 
+  const handleTogglePaid = async (expense: FixedExpense) => {
+    await settleExpense({
+      id: expense.id,
+      month: monthKey,
+      paid: !expense.paid,
+    }).unwrap();
+  };
+
   const isBusy = isLoading || categoriesLoading;
   const mutationError = createState.error ?? updateState.error;
 
@@ -97,9 +111,12 @@ export default function FixedExpensesPage() {
               Gastos recorrentes que se repetem todo mês
             </p>
           </div>
-          <Button variant="primary" icon={<Plus size={16} />} onClick={openCreate}>
-            Nova despesa
-          </Button>
+          <div className={styles.controls}>
+            <MonthNavigator monthKey={monthKey} onChange={setMonthKey} />
+            <Button variant="primary" icon={<Plus size={16} />} onClick={openCreate}>
+              Nova despesa
+            </Button>
+          </div>
         </div>
 
         {isBusy ? (
@@ -125,6 +142,12 @@ export default function FixedExpensesPage() {
                   {totals.activeCount} de {totals.totalCount}
                 </p>
               </div>
+              <div className={styles.summaryCard}>
+                <p className={styles.summaryLabel}>Pagas no mês</p>
+                <p className={styles.summaryValue}>
+                  {totals.paidCount} de {totals.activeCount}
+                </p>
+              </div>
             </div>
 
             <DashboardPanel title="Suas despesas fixas">
@@ -134,6 +157,7 @@ export default function FixedExpensesPage() {
                 onEdit={openEdit}
                 onDelete={handleDelete}
                 onToggleActive={handleToggleActive}
+                onTogglePaid={handleTogglePaid}
               />
             </DashboardPanel>
           </>

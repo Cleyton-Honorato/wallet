@@ -25,6 +25,45 @@ export interface CategoryExpenseSlice {
   percentage: number;
 }
 
+export type MatrixSectionKind = 'expense' | 'income';
+
+export type MatrixRowType =
+  | 'fixedExpense'
+  | 'variableExpenseCategory'
+  | 'fixedIncome'
+  | 'variableIncomeCategory';
+
+export type MatrixCellStatus = 'none' | 'pending' | 'partial' | 'paid';
+
+export interface MatrixRow {
+  id: string;
+  label: string;
+  /** Valores de Janeiro (0) a Dezembro (11). */
+  values: number[];
+  /** Status de quitação por mês (Janeiro=0 … Dezembro=11). */
+  statuses: MatrixCellStatus[];
+  rowType: MatrixRowType;
+  /** id da despesa/receita fixa, ou da categoria (variáveis). */
+  refId: number;
+}
+
+export interface MatrixSection {
+  key: string;
+  title: string;
+  kind: MatrixSectionKind;
+  rows: MatrixRow[];
+}
+
+export interface DashboardMatrix {
+  year: number;
+  sections: MatrixSection[];
+  totals: {
+    expenses: number[];
+    income: number[];
+    leftover: number[];
+  };
+}
+
 export interface MonthlyBudgetView {
   month: string;
   monthLabel: string;

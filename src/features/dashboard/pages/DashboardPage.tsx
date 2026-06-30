@@ -8,7 +8,9 @@ import { MiniStatCard } from '@features/dashboard/components/MiniStatCard';
 import { ExpensesByCategoryPieChart } from '@features/dashboard/components/ExpensesByCategoryPieChart';
 import { MonthlyBudgetPanel } from '@features/dashboard/components/MonthlyBudgetPanel';
 import { RecentTransactionsPanel } from '@features/dashboard/components/RecentTransactionsPanel';
+import { AnnualMatrixPanel } from '@features/dashboard/components/AnnualMatrixPanel';
 import { NewTransactionModal } from '@features/dashboard/components/NewTransactionModal';
+import { EmergencyFundModal } from '@features/emergency-fund/components/EmergencyFundModal';
 import { useDashboardPeriod } from '@features/dashboard/hooks/useDashboardPeriod';
 import { useDashboardSummary } from '@features/dashboard/hooks/useDashboardSummary';
 import styles from './DashboardPage.module.css';
@@ -23,6 +25,7 @@ export default function DashboardPage() {
   const { period, setYear, setMonth } = useDashboardPeriod();
   const { summary, isLoading, error } = useDashboardSummary(period);
   const [isNewTxOpen, setNewTxOpen] = useState(false);
+  const [isReserveOpen, setReserveOpen] = useState(false);
 
   const subtitle = summary
     ? `${capitalize(summary.periodLabel)} · resumo do ${summary.period.month ? 'mês' : 'ano'}`
@@ -55,6 +58,7 @@ export default function DashboardPage() {
                 balance={summary.balance}
                 periodLabel={capitalize(summary.periodLabel)}
                 emergencyFund={summary.emergencyFund}
+                onManageReserve={() => setReserveOpen(true)}
               />
               <div className={styles.miniStats}>
                 <MiniStatCard
@@ -86,6 +90,8 @@ export default function DashboardPage() {
               <MonthlyBudgetPanel budgetView={summary.monthlyBudget} />
               <RecentTransactionsPanel onNewTransaction={() => setNewTxOpen(true)} />
             </div>
+
+            <AnnualMatrixPanel year={period.year} />
           </>
         ) : null}
 
@@ -94,6 +100,10 @@ export default function DashboardPage() {
             categories={modalCategories}
             onClose={() => setNewTxOpen(false)}
           />
+        )}
+
+        {isReserveOpen && (
+          <EmergencyFundModal onClose={() => setReserveOpen(false)} />
         )}
       </div>
     </PageContainer>

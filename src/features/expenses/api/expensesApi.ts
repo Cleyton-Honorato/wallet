@@ -18,6 +18,7 @@ interface ApiFixedExpense {
   isActive: boolean;
   startDate: string;
   endDate: string | null;
+  paid: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -47,6 +48,7 @@ function toFixedExpense(raw: ApiFixedExpense): FixedExpense {
     isActive: raw.isActive,
     startDate: raw.startDate,
     endDate: raw.endDate ?? undefined,
+    paid: raw.paid,
     createdAt: raw.createdAt,
     updatedAt: raw.updatedAt,
   };
@@ -70,8 +72,9 @@ function toVariableExpense(raw: ApiVariableExpense): VariableExpense {
 
 export const expensesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getFixedExpenses: builder.query<FixedExpense[], void>({
-      query: () => '/expenses/fixed',
+    getFixedExpenses: builder.query<FixedExpense[], string | void>({
+      query: (month) =>
+        month ? `/expenses/fixed?month=${month}` : '/expenses/fixed',
       transformResponse: (raw: ApiFixedExpense[]) => raw.map(toFixedExpense),
       providesTags: (result) =>
         result
@@ -80,6 +83,25 @@ export const expensesApi = baseApi.injectEndpoints({
               { type: 'FixedExpense', id: 'LIST' },
             ]
           : [{ type: 'FixedExpense', id: 'LIST' }],
+    }),
+    settleFixedExpense: builder.mutation<
+      FixedExpense,
+      { id: string; month: string; paid: boolean }
+    >({
+      query: ({ id, month, paid }) => ({
+        url: `/expenses/fixed/${id}/settlement`,
+        method: 'PUT',
+        body: { month, paid },
+      }),
+      transformResponse: toFixedExpense,
+      invalidatesTags: [{ type: 'FixedExpense', id: 'LIST' }, 'Dashboard'],
+    }),
+    bulkSettleVariableExpenses: builder.mutation<
+      { updated: number },
+      { categoryId: number; month: string; paid: boolean }
+    >({
+      query: (body) => ({ url: '/expenses/variable/settle', method: 'POST', body }),
+      invalidatesTags: [{ type: 'VariableExpense', id: 'LIST' }, 'Dashboard'],
     }),
     createFixedExpense: builder.mutation<FixedExpense, CreateFixedExpenseRequest>({
       query: (body) => ({ url: '/expenses/fixed', method: 'POST', body }),
@@ -151,6 +173,8 @@ export const {
   useCreateFixedExpenseMutation,
   useUpdateFixedExpenseMutation,
   useDeleteFixedExpenseMutation,
+  useSettleFixedExpenseMutation,
+  useBulkSettleVariableExpensesMutation,
   useGetVariableExpensesQuery,
   useCreateVariableExpenseMutation,
   useUpdateVariableExpenseMutation,

@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from 'lucide-react';
+import { Check, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@shared/components/ui/Button';
 import { formatCurrency } from '@shared/utils/formatCurrency';
 import type { Category } from '@features/categories/types/category.types';
@@ -13,6 +13,7 @@ interface FixedExpenseListProps {
   onEdit: (expense: FixedExpense) => void;
   onDelete: (expense: FixedExpense) => void;
   onToggleActive: (expense: FixedExpense) => void;
+  onTogglePaid: (expense: FixedExpense) => void;
 }
 
 export function FixedExpenseList({
@@ -21,6 +22,7 @@ export function FixedExpenseList({
   onEdit,
   onDelete,
   onToggleActive,
+  onTogglePaid,
 }: FixedExpenseListProps) {
   if (expenses.length === 0) {
     return (
@@ -46,6 +48,9 @@ export function FixedExpenseList({
               <span className={expense.isActive ? styles.statusActive : styles.statusInactive}>
                 {expense.isActive ? 'Ativa' : 'Inativa'}
               </span>
+              <span className={expense.paid ? styles.statusPaid : styles.statusPending}>
+                {expense.paid ? 'Paga no mês' : 'Pendente'}
+              </span>
             </div>
             {expense.description && (
               <span className={styles.rowMeta}>{expense.description}</span>
@@ -58,6 +63,13 @@ export function FixedExpenseList({
           </div>
 
           <div className={styles.rowActions}>
+            <Button
+              variant={expense.paid ? 'ghost' : 'primary'}
+              size="sm"
+              onClick={() => onTogglePaid(expense)}
+            >
+              {expense.paid ? 'Desfazer' : (<><Check size={16} /> Pagar</>)}
+            </Button>
             <Button
               variant="ghost"
               size="sm"

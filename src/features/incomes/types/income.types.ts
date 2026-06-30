@@ -1,20 +1,20 @@
-export interface FixedExpense {
+export interface FixedIncome {
   id: string;
   title: string;
   amount: number;
   categoryId: string;
   description?: string;
-  dueDay: number;
+  receiptDay: number;
   isActive: boolean;
   startDate: string;
   endDate?: string;
-  /** Pago no mês consultado (quando a lista é carregada com um mês). */
-  paid: boolean;
+  /** Recebido no mês consultado (quando a lista é carregada com um mês). */
+  received: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface VariableExpense {
+export interface VariableIncome {
   id: string;
   title: string;
   estimatedAmount: number;
@@ -23,33 +23,33 @@ export interface VariableExpense {
   description?: string;
   month: string;
   tags?: string[];
-  isPaid: boolean;
+  isReceived: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CreateFixedExpenseRequest {
+export interface CreateFixedIncomeRequest {
   categoryId: number;
   title: string;
   amount: number;
   description?: string;
-  dueDay: number;
+  receiptDay: number;
   isActive?: boolean;
   startDate: string;
   endDate?: string;
 }
 
-export type UpdateFixedExpenseRequest = Partial<CreateFixedExpenseRequest>;
+export type UpdateFixedIncomeRequest = Partial<CreateFixedIncomeRequest>;
 
-export interface CreateVariableExpenseRequest {
+export interface CreateVariableIncomeRequest {
   categoryId: number;
   title: string;
   estimatedAmount: number;
   actualAmount?: number;
   description?: string;
   month: string;
-  isPaid?: boolean;
+  isReceived?: boolean;
   tags?: string[];
 }
 
-export type UpdateVariableExpenseRequest = Partial<CreateVariableExpenseRequest>;
+export type UpdateVariableIncomeRequest = Partial<CreateVariableIncomeRequest>;

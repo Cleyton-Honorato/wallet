@@ -9,10 +9,16 @@ interface BalanceHeroCardProps {
   balance: number;
   periodLabel: string;
   emergencyFund: DashboardSummary['emergencyFund'];
+  onManageReserve?: () => void;
 }
 
 /** Hero card: prominent monthly balance plus the emergency-fund progress. */
-export function BalanceHeroCard({ balance, periodLabel, emergencyFund }: BalanceHeroCardProps) {
+export function BalanceHeroCard({
+  balance,
+  periodLabel,
+  emergencyFund,
+  onManageReserve,
+}: BalanceHeroCardProps) {
   const { balance: reserveBalance, targetAmount } = emergencyFund;
 
   return (
@@ -28,7 +34,12 @@ export function BalanceHeroCard({ balance, periodLabel, emergencyFund }: Balance
 
       <div className={styles.divider} />
 
-      <div className={styles.reserve}>
+      <button
+        type="button"
+        className={styles.reserve}
+        onClick={onManageReserve}
+        aria-label="Gerenciar reserva de emergência"
+      >
         <div className={styles.reserveHead}>
           <span className={styles.reserveLabel}>
             <span className={styles.reserveIcon}>
@@ -43,7 +54,7 @@ export function BalanceHeroCard({ balance, periodLabel, emergencyFund }: Balance
           <span>Meta</span>
           <span className={styles.reserveGoal}>{formatCurrency(targetAmount)}</span>
         </div>
-      </div>
+      </button>
     </section>
   );
 }

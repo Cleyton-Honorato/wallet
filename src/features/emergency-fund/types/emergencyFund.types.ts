@@ -14,3 +14,19 @@ export interface EmergencyFundMovement {
   date: string;
   description?: string;
 }
+
+export interface EmergencyFund extends EmergencyFundSnapshot {
+  movements: EmergencyFundMovement[];
+}
+
+export interface UpdateEmergencyFundRequest {
+  targetAmount: number;
+  balance?: number;
+}
+
+export interface AddEmergencyFundMovementRequest {
+  type: EmergencyFundMovementType;
+  amount: number;
+  date: string;
+  description?: string;
+}

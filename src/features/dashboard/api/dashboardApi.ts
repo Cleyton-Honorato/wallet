@@ -1,5 +1,6 @@
 import { baseApi } from '@app/api';
 import type {
+  DashboardMatrix,
   DashboardPeriod,
   DashboardSummary,
 } from '@features/dashboard/types/dashboard.types';
@@ -115,7 +116,12 @@ export const dashboardApi = baseApi.injectEndpoints({
         toSummary(raw, arg),
       providesTags: ['Dashboard'],
     }),
+    getDashboardMatrix: builder.query<DashboardMatrix, number>({
+      query: (year) => `/dashboard/matrix?year=${year}`,
+      providesTags: ['Dashboard'],
+    }),
   }),
 });
 
-export const { useGetDashboardSummaryQuery } = dashboardApi;
+export const { useGetDashboardSummaryQuery, useGetDashboardMatrixQuery } =
+  dashboardApi;
